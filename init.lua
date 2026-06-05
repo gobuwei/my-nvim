@@ -24,7 +24,7 @@ require("lazy").setup({
     -- Color schemes
     { "rktjmp/lush.nvim" },
     { "ellisonleao/gruvbox.nvim",       opts = {} },
-    { "xiyaowong/transparent.nvim" },   -- :TransparentTogggle
+    { "xiyaowong/transparent.nvim" }, -- :TransparentTogggle
 
     -- LSP
     { "neovim/nvim-lspconfig" },
@@ -198,12 +198,12 @@ local function cycle_indent()
 end
 
 local function toggle_diagnostic()
-    local value = not vim.diagnostic.config().signs,
-        vim.diagnostic.config({
-            signs = value,
-            virtual_text = value,
-            underline = value,
-        })
+    local value = not vim.diagnostic.config().signs
+    vim.diagnostic.config({
+        signs = value,
+        virtual_text = value,
+        underline = value,
+    })
 end
 
 local function toggle_signcolumn()
