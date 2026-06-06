@@ -243,6 +243,11 @@ local function toggle_quickfix()
     vim.cmd("copen")
 end
 
+local use_lsp_keymap = true
+if vim.system({ "global", "-p" }):wait().code == 0 then
+    use_lsp_keymap = false
+end
+
 -- Toggle keymap scheme for tag navigation
 local function toggle_keymap()
     if use_lsp_keymap == true then
@@ -366,12 +371,6 @@ map("n", " gr", tel.lsp_references)
 map("n", " gt", tel.lsp_type_definitions)
 map("n", " gc", tel.lsp_incoming_calls)
 map("n", " gi", tel.lsp_implementations)
-
-local use_lsp_keymap = true
-local result = vim.fn.system("global -p 2>/dev/null")
-if vim.v.shell_error == 0 then
-    use_lsp_keymap = false
-end
 
 toggle_keymap()
 
