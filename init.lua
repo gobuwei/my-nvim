@@ -1,6 +1,7 @@
 ------------------------------------------------------------
 -- Vim settings
 ------------------------------------------------------------
+vim.g.mapleader = " "
 vim.opt.mousemoveevent = true
 vim.opt.termguicolors = true
 vim.opt.number = true
@@ -55,8 +56,25 @@ require("lazy").setup({
             },
         },
     },
-    { "hallestar/nvgtags.nvim" },
-
+    {
+        "dhananjaylatkar/cscope_maps.nvim",
+        dependencies = { "nvim-telescope/telescope.nvim" },
+        opts = {
+            disable_maps = false,     -- set true to define your own keymaps
+            skip_input_prompt = true, -- dont ask for input, use word under cursor
+            prefix = "<leader>c",     -- keymap prefix
+            cscope = {
+                exec = "gtags-cscope",
+                picker = "telescope",
+                skip_picker_for_single_result = true, -- jump directly if one result
+            },
+            project_rooter = {
+                enable = true,     -- "true" or "false"
+                -- change cwd to where db_file is located
+                change_cwd = true, -- "true" or "false"
+            },
+        },
+    },
     {
         "nvim-tree/nvim-tree.lua",
         dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -160,7 +178,6 @@ vim.cmd.colorscheme "gruvbox"
 
 -- Telescope
 require("telescope").load_extension("fzf")
-require("telescope").load_extension('nvgtags')
 
 ------------------------------------------------------------
 -- Local functions
@@ -226,6 +243,30 @@ local function toggle_quickfix()
     vim.cmd("copen")
 end
 
+-- Toggle keymap scheme for tag navigation
+local function toggle_keymap()
+    if use_lsp_keymap == true then
+        -- Telescope LSP keymaps
+        local tel = require("telescope.builtin")
+        map("n", "f", tel.lsp_definitions)
+        map("n", "gr", tel.lsp_references)
+        map("n", "gt", tel.lsp_type_definitions)
+        map("n", "gc", tel.lsp_incoming_calls)
+        map("n", "gi", tel.lsp_implementations)
+        print("LSP keymaps used")
+    else
+        -- Cscope keymaps
+        map("n", "f", "<cmd>Cs find g<cr>", { desc = "Find global definitions" })
+        map("n", "gr", "<cmd>Cs find s<cr>", { desc = "Find refereces" })
+        map("n", "gc", "<cmd>Cs find c<cr>", { desc = "Find all incoming calls" })
+        map({ "n", "v" }, "ge", "<cmd>Cs find e<cr>", { desc = "Egrep search" })
+        map("n", "gf", "<cmd>Cs find f<cr>", { desc = "Open file" })
+        map("n", "gi", "<cmd>Cs find i<cr>", { desc = "Find files that includes the file" })
+        print("Cscope keymaps used")
+    end
+    use_lsp_keymap = not use_lsp_keymap
+end
+
 ------------------------------------------------------------
 -- Keymaps
 ------------------------------------------------------------
@@ -251,7 +292,6 @@ map({ "n", "v" }, "t]", function() pcall(vim.cmd, "+tabmove") end, { desc = "Mov
 map({ "n", "v" }, "<C-[>", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
 map({ "n", "v" }, "<C-]>", "<cmd>tabnext<CR>", { desc = "Next tab" })
 
-
 -- Window management
 map("n", "<Tab>", "<C-w>w", { desc = "Next window" })
 map("n", "<S-Tab>", "<C-w>W", { desc = "Previous window" })
@@ -270,29 +310,20 @@ map("n", "<C-n>", "<cmd>cn<CR>", { desc = "Next error" })
 map("n", "<C-p>", "<cmd>cp<CR>", { desc = "Previous error" })
 map({ "n", "i", "v" }, "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
 
--- Code navigation
-map("n", "e", ":pop<CR>", { silent = true })
--- map("n", "f", vim.lsp.buf.definition, {})
-map("n", "gd", vim.lsp.buf.declaration, {})
--- map("n", "gr", vim.lsp.buf.references, {})
--- map("n", "gi", vim.lsp.buf.implementation, {})
--- map("n", "gt", vim.lsp.buf.type_definition, {})
-map("n", "gh", vim.lsp.buf.hover, {})
-
 -- <Space> key leading
 map("n", " ti", cycle_indent, { silent = true })
 map("n", " tf", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle tagbar" })
 map("n", " tt", "<cmd>Vista!!<CR>", { desc = "Toggle file tree" })
+map("n", " tq", toggle_quickfix, { desc = "Toggle quickfix" })
+map("n", " tk", toggle_keymap, {})
 map("n", " td", toggle_diagnostic, { silent = true })
 map("n", " ts", toggle_signcolumn, { silent = true })
 map("n", " th", function()
     vim.opt.hlsearch = not vim.opt.hlsearch:get()
 end, { noremap = true, silent = true })
-map("n", " tq", toggle_quickfix, { desc = "Toggle quickfix" })
 map("n", " df", function() vim.diagnostic.open_float() end, {})
 map("n", " dn", function() vim.diagnostic.goto_next() end, {})
 map("n", " dp", function() vim.diagnostic.goto_prev() end, {})
-map("n", " tr", function() vim.wo.wrap = not vim.wo.wrap end, {})
 
 map("n", " tn", function()
     vim.opt.number = not vim.opt.number:get()
@@ -302,19 +333,6 @@ map("n", " tN", function()
 end, { desc = "Toggle relative line number" })
 
 map("n", " fm", function() vim.lsp.buf.format() end, {})
-
--- telescope.nvim plugin
-local builtin = require("telescope.builtin")
-map("n", " fp", builtin.builtin)
-map("n", " ff", builtin.find_files)
-map("n", " fg", builtin.live_grep)
-map({ "n", "v" }, " fs", builtin.grep_string)
-map("n", " fh", builtin.help_tags)
-map("n", "f", builtin.lsp_definitions)
-map("n", "gr", builtin.lsp_references)
-map("n", "gi", builtin.lsp_implementations)
-map("n", "gt", builtin.lsp_type_definitions)
-map("n", "gc", builtin.lsp_incoming_calls)
 
 -- comment.nvim plugin
 map("n", "mm", "gcc", { remap = true, silent = true })
@@ -329,14 +347,35 @@ map({ "n", "v" }, "<C-h>", function()
     neoscroll.scroll(3, { move_cursor = false, duration = 100 })
 end)
 
--- nvgtags.nvim plugin
--- map('n', ' gx', "<cmd>Telescope nvgtags find_definition<CR>", {noremap=true, silent=true})
-map('n', ' gd', "<cmd>Telescope nvgtags find_definition_under_cursor<CR>", { noremap = true, silent = true })
--- map('n', ' gp', "<cmd>Telescope nvgtags find_reference<CR>", {noremap=true, silent=true})
-map('n', ' gr', "<cmd>Telescope nvgtags find_reference_under_cursor<CR>", { noremap = true, silent = true })
-
+------------------------------------------------------------
+-- Token location
 ------------------------------------------------------------
 
+map("n", "e", ":pop<CR>", { silent = true })
+
+-- telescope.nvim plugin
+local tel = require("telescope.builtin")
+map("n", " gp", tel.builtin, { desc = "Builtin Pickers" })
+map("n", " gf", tel.find_files)
+map("n", " gg", tel.live_grep)
+map("n", " gh", tel.help_tags)
+map({ "n", "v" }, " gw", tel.grep_string, { desc = "Find word under cursor" })
+map({ "n", "v" }, "gw", tel.grep_string, { desc = "Find word under cursor" })
+map("n", " gd", tel.lsp_definitions)
+map("n", " gr", tel.lsp_references)
+map("n", " gt", tel.lsp_type_definitions)
+map("n", " gc", tel.lsp_incoming_calls)
+map("n", " gi", tel.lsp_implementations)
+
+local use_lsp_keymap = true
+local result = vim.fn.system("global -p 2>/dev/null")
+if vim.v.shell_error == 0 then
+    use_lsp_keymap = false
+end
+
+toggle_keymap()
+
+------------------------------------------------------------
 -- AutoCmd
 ------------------------------------------------------------
 
