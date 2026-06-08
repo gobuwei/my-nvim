@@ -90,6 +90,12 @@ require("lazy").setup({
         "nvim-tree/nvim-tree.lua",
         dependencies = { "nvim-tree/nvim-web-devicons" },
         opts = {
+            tab = {
+                sync = {
+                    open = true,  -- open nvim-tree in new tabs automatically
+                    close = true, -- close nvim-tree in all tabs when closed in one
+                },
+            },
             on_attach = function(bufnr)
                 local api = require("nvim-tree.api")
                 api.config.mappings.default_on_attach(bufnr)
