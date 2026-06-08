@@ -32,6 +32,17 @@ require("lazy").setup({
     { "mason-org/mason.nvim",           opts = {} },
     { "mason-org/mason-lspconfig.nvim", opts = {} },
 
+    {
+        'nvim-treesitter/nvim-treesitter',
+        disabled = true,
+        lazy = false,
+        build = ':TSUpdate',
+        ensure_installed = { "c", "bash", "rust", "lua" },
+        highlight = {
+            enable = true,
+        },
+    },
+
     -- Telescope and pickers
     {
         "nvim-telescope/telescope.nvim",
@@ -166,7 +177,16 @@ require("lazy").setup({
         }
     },
     { "famiu/bufdelete.nvim",  enabled = false },
-    { "numtostr/comment.nvim", opts = {} },
+    {
+        'nvim-mini/mini.comment',
+        opts = {
+            mappings = {
+                comment = 'm',        -- Toggle comment
+                comment_line = 'mm',  -- Toggle comment on current line
+                comment_visual = 'm', -- Toggle comment in visual mode
+            }
+        }
+    },
     { "karb94/neoscroll.nvim", opts = {} },
 
     { "liuchengxu/vista.vim",  cmd = "Vista" },
@@ -338,12 +358,6 @@ map("n", " tN", function()
 end, { desc = "Toggle relative line number" })
 
 map("n", " fm", function() vim.lsp.buf.format() end, {})
-
--- comment.nvim plugin
-map("n", "mm", "gcc", { remap = true, silent = true })
-map("n", "mb", "gbc", { remap = true, silent = true })
-map("v", "mm", "gc", { remap = true, silent = true })
-map("v", "mb", "gb", { remap = true, silent = true })
 
 -- neoscroll.nvim plugin
 local neoscroll = require("neoscroll")
