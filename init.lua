@@ -98,10 +98,16 @@ require("lazy").setup({
             },
             on_attach = function(bufnr)
                 local api = require("nvim-tree.api")
+                local opts = { buffer = bufnr, noremap = true, silent = true }
+
+                -- default mappings
                 api.config.mappings.default_on_attach(bufnr)
+
+                vim.keymap.set("n", "o", api.node.open.no_window_picker, opts)
+
                 -- Disable conflict keymaps in vim-tree buffer
-                vim.keymap.del("n", "<Tab>", { buffer = bufnr })
-                vim.keymap.del("n", "<C-]>", { buffer = bufnr })
+                vim.keymap.del("n", "<Tab>", opts)
+                vim.keymap.del("n", "<C-]>", opts)
             end,
         }
     },
