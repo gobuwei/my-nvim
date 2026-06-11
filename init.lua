@@ -335,6 +335,8 @@ end
 
 map("n", " bb", "<cmd>TablineToggleShowAllBuffers<cr>", {})
 map("n", " bn", toggle_tabline_bufnr, {})
+map("n", " bd", "<cmd>bd<CR>", {})
+map("n", " bw", "<cmd>bw<CR>", {})
 
 ------------------------------------------------------------
 -- Token location
