@@ -325,8 +325,16 @@ map({ "n", "v" }, "<C-h>", function()
 end)
 
 -- tabline.nvim plugin
--- To set show_all_buffers = false in tabline.lua
-map("n", " tb", "<cmd>TablineToggleShowAllBuffers<cr>", {})
+-- Toggle buffer numbers in tabline.nvim
+local function toggle_tabline_bufnr()
+    local cfg = require("tabline").options
+
+    cfg.show_bufnr = not cfg.show_bufnr
+    vim.cmd("redrawtabline")
+end
+
+map("n", " bb", "<cmd>TablineToggleShowAllBuffers<cr>", {})
+map("n", " bn", toggle_tabline_bufnr, {})
 
 ------------------------------------------------------------
 -- Token location
