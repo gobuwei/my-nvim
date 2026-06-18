@@ -364,6 +364,11 @@ toggle_keymap()
 -- AutoCmd
 ------------------------------------------------------------
 
+autocmd({ "BufRead", "BufNewFile" }, {
+    pattern = { "Jenkinsfile", "Jenkinsfile.*", "*.[Jj]enkinsfile" },
+    command = "setfiletype groovy",
+})
+
 -- Indentation
 autocmd("FileType", {
     pattern = "sh,go,lua",
