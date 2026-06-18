@@ -256,7 +256,7 @@ end
 
 -- Highlight the word under cursor without moving to the next
 map("n", "*", function()
-    vim.fn.setreg("/", "\\V" .. cword())
+    vim.fn.setreg("/", "\\V\\<" .. vim.fn.escape(cword(), "\\") .. "\\>")
     vim.opt.hlsearch = true
 end, { noremap = true, silent = true })
 
