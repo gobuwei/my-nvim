@@ -384,6 +384,10 @@ autocmd("FileType", {
     pattern = "sh,go,lua",
     callback = function() set_indent(4) end,
 })
+autocmd("FileType", {
+    pattern = "make",
+    callback = function() set_indent(8) end,
+})
 
 -- Jump to the last cursor position when reopened
 autocmd("BufReadPost", {
