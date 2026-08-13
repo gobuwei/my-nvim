@@ -90,6 +90,11 @@ require("lazy").setup({
         "nvim-tree/nvim-tree.lua",
         dependencies = { "nvim-tree/nvim-web-devicons" },
         opts = {
+            actions = {
+                open_file = {
+                    resize_window = false, -- prevents nvim-tree from resizing on file open
+                },
+            },
             tab = {
                 sync = {
                     open = true,  -- open nvim-tree in new tabs automatically
