@@ -373,6 +373,11 @@ autocmd({ "BufRead", "BufNewFile" }, {
     pattern = { "Jenkinsfile", "Jenkinsfile.*", "*.[Jj]enkinsfile" },
     command = "setfiletype groovy",
 })
+autocmd({ "BufRead", "BufNewFile" }, {
+    pattern = { "*.inc", "bblayers.conf", "layer.conf", "include/*.conf" },
+    command = "setfiletype groovy",
+})
+
 
 -- Indentation
 autocmd("FileType", {
