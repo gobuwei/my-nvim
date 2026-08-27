@@ -158,6 +158,7 @@ require("lazy").setup({
 -- Plugin dependent settings
 vim.opt.background = "dark" -- or "light" for light mode
 vim.cmd.colorscheme "gruvbox"
+vim.g.vista_sidebar_position = "vertical topleft"
 
 -- Telescope
 require("telescope").load_extension("fzf")
@@ -224,6 +225,16 @@ local function toggle_quickfix()
         end
     end
     vim.cmd("copen")
+end
+
+local function toggle_nvimtree()
+    vim.cmd("Vista!")
+    vim.cmd("NvimTreeToggle")
+end
+
+local function toggle_vista()
+    vim.cmd("NvimTreeClose")
+    vim.cmd("Vista!!")
 end
 
 local use_lsp_keymap = true
@@ -300,8 +311,8 @@ map({ "n", "i", "v" }, "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
 
 -- <Space> key leading
 map("n", " ti", cycle_indent, { silent = true })
-map("n", " tf", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle tagbar" })
-map("n", " tt", "<cmd>Vista!!<CR>", { desc = "Toggle file tree" })
+map("n", " tf", toggle_nvimtree, { desc = "Toggle nvimtree" })
+map("n", " tt", toggle_vista, { desc = "Toggle vista tag tree" })
 map("n", " tq", toggle_quickfix, { desc = "Toggle quickfix" })
 map("n", " tk", toggle_keymap, {})
 map("n", " td", toggle_diagnostic, { silent = true })
