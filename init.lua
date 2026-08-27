@@ -386,7 +386,7 @@ autocmd({ "BufRead", "BufNewFile" }, {
 })
 autocmd({ "BufRead", "BufNewFile" }, {
     pattern = { "*.inc", "bblayers.conf", "layer.conf", "include/*.conf" },
-    command = "setfiletype groovy",
+    command = "setfiletype bitbake",
 })
 
 
