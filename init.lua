@@ -151,8 +151,8 @@ require("lazy").setup({
         }
     },
     { "karb94/neoscroll.nvim", opts = {} },
-
     { "liuchengxu/vista.vim",  cmd = "Vista" },
+    { "nmac427/guess-indent.nvim", opts = {} },
 })
 
 -- Plugin dependent settings
@@ -387,17 +387,6 @@ autocmd({ "BufRead", "BufNewFile" }, {
 autocmd({ "BufRead", "BufNewFile" }, {
     pattern = { "*.inc", "bblayers.conf", "layer.conf", "include/*.conf" },
     command = "setfiletype bitbake",
-})
-
-
--- Indentation
-autocmd("FileType", {
-    pattern = "sh,go,lua",
-    callback = function() set_indent(4) end,
-})
-autocmd("FileType", {
-    pattern = "make",
-    callback = function() set_indent(8) end,
 })
 
 -- Jump to the last cursor position when reopened
